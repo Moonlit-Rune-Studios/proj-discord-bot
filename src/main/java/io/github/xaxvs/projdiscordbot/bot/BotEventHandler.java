@@ -36,12 +36,9 @@ public class BotEventHandler {
     Message message = event.getMessage();
     if (!message.getChannelId().equals(channelId)) return;
     String content = message.getContentDisplay();
-    log.info("ok");
     if (!content.equals(updateCommand)) return;
-    log.info("1");
     long currentTime = System.nanoTime();
     if (currentTime - lastExecuted < saveData.getReadmeCommandRateLimit()) return;
-    log.info("2");
     final TextChannel channel = event.getGuild().getTextChannelById(
         saveData.getUpdateChannelId());
     if (channel == null) return;
@@ -49,7 +46,6 @@ public class BotEventHandler {
     message.delete().queue(
         a -> {
           lastExecuted = System.nanoTime();
-          log.info("success");
           Main.getReadme(snapshot -> {
             if (snapshot == null) {
               log.error("Failed to retrieve readme");

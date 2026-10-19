@@ -69,7 +69,6 @@ public class Bot implements CommandMap {
     }
 
     for (BotCommand cmd : botCommands.values()) {
-      log.info("added cmd {}", cmd.getName());
       guild.upsertCommand(
           Commands.slash(cmd.getName(), cmd.getDescription()).addOptions(cmd.getOptionData())
       ).queueAfter(1, TimeUnit.SECONDS);
