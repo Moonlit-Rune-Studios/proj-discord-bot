@@ -9,12 +9,12 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 
-public class SetWebhookUserId implements BotCommand {
+public class SetUpdateCommand implements BotCommand {
 
   private final SaveData saveData;
   private final Path path;
 
-  public SetWebhookUserId(SaveData saveData, Path path) {
+  public SetUpdateCommand(SaveData saveData, Path path) {
     this.saveData = saveData;
     this.path = path;
   }
@@ -23,27 +23,27 @@ public class SetWebhookUserId implements BotCommand {
   public void onCommandReceived(SlashCommandInteractionEvent event) {
     event.deferReply(true).queue();
     String option = event.getOption("user_id").getAsString();
-    saveData.setWebhookUserId(option);
+    saveData.setUpdateCommand(option);
     saveData.save(path);
     event.getHook().sendMessage("Successfully set the user id").queue();
   }
 
   @Override
   public String getName() {
-    return "setwebhookuserid";
+    return "setupdatecommand";
   }
 
   @Override
   public String getDescription() {
-    return "Sets the user id of the webhook";
+    return "Sets the command to listen for that will re-fetch the readme";
   }
 
   @Override
   public Collection<? extends OptionData> getOptionData() {
     return List.of(new OptionData(
         OptionType.STRING,
-        "user_id",
-        "copy the id of the webhook discord user",
+        "command",
+        "the command, ex: $README",
         true));
   }
 }

@@ -7,35 +7,41 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 public class SaveData {
-    private String webhookOutputChannelId;
+    private String updateChannelId;
     private String readmeOutputChannelId;
-    private String readmeOutputMessageId;
-    private String webhookUserId;
+    private String updateCommand;
+    private long readmeCommandRateLimit;
 
     public SaveData() {
-        webhookOutputChannelId = " ";
+        updateChannelId = " ";
         readmeOutputChannelId = " ";
-        readmeOutputMessageId = " ";
-        webhookUserId = " ";
+        updateCommand = " ";
+        readmeCommandRateLimit = 0;
     }
 
     public static boolean isValid(SaveData saveData) {
-        return saveData.webhookUserId != null &&
-                !saveData.webhookUserId.isBlank() &&
-                saveData.webhookOutputChannelId != null &&
-                !saveData.webhookOutputChannelId.isBlank() &&
+        return saveData.updateCommand != null &&
+                !saveData.updateCommand.isBlank() &&
+                saveData.updateChannelId != null &&
+                !saveData.updateChannelId.isBlank() &&
                 saveData.getReadmeOutputChannelId() != null &&
-                !saveData.getReadmeOutputChannelId().isBlank() &&
-                saveData.getReadmeOutputMessageId() != null &&
-                !saveData.getReadmeOutputMessageId().isBlank();
+                !saveData.getReadmeOutputChannelId().isBlank();
     }
 
-    public String getWebhookUserId() {
-        return webhookUserId;
+    public long getReadmeCommandRateLimit() {
+        return readmeCommandRateLimit;
     }
 
-    public void setWebhookUserId(String webhookUserId) {
-        this.webhookUserId = webhookUserId;
+    public void setReadmeCommandRateLimit(long readmeCommandRateLimit) {
+        this.readmeCommandRateLimit = readmeCommandRateLimit;
+    }
+
+    public String getUpdateCommand() {
+        return updateCommand;
+    }
+
+    public void setUpdateCommand(String updateCommand) {
+        this.updateCommand = updateCommand;
     }
 
     public String getReadmeOutputChannelId() {
@@ -46,20 +52,12 @@ public class SaveData {
         this.readmeOutputChannelId = readmeOutputChannelId;
     }
 
-    public String getReadmeOutputMessageId() {
-        return readmeOutputMessageId;
+    public String getUpdateChannelId() {
+        return updateChannelId;
     }
 
-    public void setReadmeOutputMessageId(String readmeOutputMessageId) {
-        this.readmeOutputMessageId = readmeOutputMessageId;
-    }
-
-    public String getWebhookOutputChannelId() {
-        return webhookOutputChannelId;
-    }
-
-    public void setWebhookOutputChannelId(String webhookOutputChannelId) {
-        this.webhookOutputChannelId = webhookOutputChannelId;
+    public void setUpdateChannelId(String updateChannelId) {
+        this.updateChannelId = updateChannelId;
     }
 
     public void save(Path path) {

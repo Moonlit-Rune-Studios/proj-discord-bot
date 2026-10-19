@@ -1,9 +1,6 @@
 package io.github.xaxvs.projdiscordbot.bot;
 
-import io.github.xaxvs.projdiscordbot.bot.commands.BotCommand;
-import io.github.xaxvs.projdiscordbot.bot.commands.SetReadmeChannel;
-import io.github.xaxvs.projdiscordbot.bot.commands.SetWebhookChannel;
-import io.github.xaxvs.projdiscordbot.bot.commands.SetWebhookUserId;
+import io.github.xaxvs.projdiscordbot.bot.commands.*;
 import io.github.xaxvs.projdiscordbot.bot.listeners.BotListener;
 import io.github.xaxvs.projdiscordbot.bot.listeners.Listener;
 import io.github.xaxvs.projdiscordbot.file.SaveData;
@@ -11,14 +8,17 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class Bot implements CommandMap {
 
@@ -39,10 +39,11 @@ public class Bot implements CommandMap {
     }
     BotEventHandler botEventHandler = new BotEventHandler(saveData, this);
 
-    addCommand(new SetWebhookChannel(saveData, path));
+    addCommand(new SetUpdateChannel(saveData, path));
     addCommand(new SetReadmeChannel(saveData, path));
-    addCommand(new SetWebhookUserId(saveData, path));
-    initCommands(guild);
+    addCommand(new SetUpdateCommand(saveData, path));
+    addCommand(new SetReadmeCommandRateLimit(saveData, path));
+    guild.retrieveCommands(true).queue(cmds -> initCommands(guild, cmds));
 
     BotListener<MessageReceivedEvent> messageEvent = new BotListener<>(
         botEventHandler::onMessageReceived,
@@ -61,11 +62,17 @@ public class Bot implements CommandMap {
     botCommands.put(command.getName().toLowerCase(Locale.ROOT), command);
   }
 
-  private void initCommands(Guild guild) {
+  private void initCommands(Guild guild, List<Command> cmds) {
+
+    for (Command cmd : cmds) {
+      guild.deleteCommandById(cmd.getId()).queue();
+    }
+
     for (BotCommand cmd : botCommands.values()) {
+      log.info("added cmd {}", cmd.getName());
       guild.upsertCommand(
           Commands.slash(cmd.getName(), cmd.getDescription()).addOptions(cmd.getOptionData())
-      ).queue();
+      ).queueAfter(1, TimeUnit.SECONDS);
     }
   }
 

@@ -8,11 +8,11 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 
-public class SetWebhookChannel implements BotCommand {
+public class SetUpdateChannel implements BotCommand {
     private final SaveData saveData;
     private final Path path;
 
-    public SetWebhookChannel(SaveData saveData, Path path) {
+    public SetUpdateChannel(SaveData saveData, Path path) {
         this.saveData = saveData;
         this.path = path;
     }
@@ -21,19 +21,19 @@ public class SetWebhookChannel implements BotCommand {
     public void onCommandReceived(SlashCommandInteractionEvent event) {
         event.deferReply(true).queue();
         String channelId = event.getChannelId();
-        saveData.setWebhookOutputChannelId(channelId);
-        event.getHook().sendMessage("Successfully set the webhook channel id.").setEphemeral(true).queue();
+        saveData.setUpdateChannelId(channelId);
+        event.getHook().sendMessage("Successfully set the channel to watch for the command").setEphemeral(true).queue();
         saveData.save(path);
     }
 
     @Override
     public String getName() {
-        return "setwebhookchannel";
+        return "setupdatechannel";
     }
 
     @Override
     public String getDescription() {
-        return "Set the channel where the webhook sends its messages";
+        return "Sets the channel to listen for the command";
     }
 
     @Override

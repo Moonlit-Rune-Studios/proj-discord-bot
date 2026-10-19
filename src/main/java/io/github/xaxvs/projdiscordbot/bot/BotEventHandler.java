@@ -1,19 +1,25 @@
 package io.github.xaxvs.projdiscordbot.bot;
 
+import io.github.xaxvs.projdiscordbot.Main;
 import io.github.xaxvs.projdiscordbot.file.SaveData;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class BotEventHandler {
 
   private static final Logger log = LoggerFactory.getLogger("BOT");
   private final SaveData saveData;
   private final CommandMap commands;
+  private long lastExecuted = 0;
 
   public BotEventHandler(SaveData saveData, CommandMap commands) {
     this.saveData = saveData;
@@ -28,19 +34,41 @@ public class BotEventHandler {
 
   public void onMessageReceived(MessageReceivedEvent event) {
     if (!SaveData.isValid(saveData)) return;
-    String rmOutChannelId = saveData.getReadmeOutputChannelId();
-    String webhookId = saveData.getWebhookUserId();
-    if (!event.isWebhookMessage()) return;
+    String channelId = saveData.getUpdateChannelId();
+    String updateCommand = saveData.getUpdateCommand();
     Message message = event.getMessage();
-    if (!message.getChannelId().equals(rmOutChannelId)) return;
-    if (!message.getAuthor().getId().equals(webhookId)) return;
+    if (!message.getChannelId().equals(channelId)) return;
     String content = message.getContentDisplay();
-    if (!content.equals("README")) return;
-    var result = message.delete();
-    result.queue(
-        a -> log.info("Success"),
+    log.info("ok");
+    if (!content.equals(updateCommand)) return;
+    log.info("1");
+    long currentTime = System.nanoTime();
+    if (currentTime - lastExecuted < saveData.getReadmeCommandRateLimit()) return;
+    log.info("2");
+    final TextChannel channel = event.getGuild().getTextChannelById(
+        saveData.getUpdateChannelId());
+    if(channel == null) return;
+
+    message.delete().queue(
+        a -> {
+          lastExecuted = System.nanoTime();
+          log.info("success");
+          Main.getReadme(snapshot -> {
+            if(snapshot == null) {
+              log.error("Failed to retrieve readme");
+              return;
+            }
+            sendMessage(channel, snapshot.content());
+          });
+        },
         throwable -> log.error("Error: Failed to delete message", throwable)
     );
+
   }
+
+  private void sendMessage(TextChannel guildChannel, String message) {
+    guildChannel.sendMessage(message).queue();
+  }
+
 
 }
