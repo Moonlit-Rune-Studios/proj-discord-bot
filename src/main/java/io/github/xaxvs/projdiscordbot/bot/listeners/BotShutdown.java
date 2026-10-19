@@ -8,16 +8,16 @@ import java.util.function.Consumer;
 
 public class BotShutdown extends ListenerAdapter {
 
-    private final Consumer<JDA> callback;
+  private final Consumer<JDA> callback;
 
-    public BotShutdown(Consumer<JDA> callback) {
-        this.callback = callback;
-    }
+  public BotShutdown(Consumer<JDA> callback) {
+    this.callback = callback;
+  }
 
 
-    @Override
-    public void onShutdown(ShutdownEvent event) {
-        callback.accept(event.getJDA());
-    }
+  @Override
+  public void onShutdown(ShutdownEvent event) {
+    callback.accept(event.getJDA());
+  }
 
 }

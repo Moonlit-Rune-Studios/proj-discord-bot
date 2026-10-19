@@ -5,12 +5,12 @@ import net.dv8tion.jda.api.events.GenericEvent;
 import java.util.function.Consumer;
 
 public record BotListener<T extends GenericEvent>(
-        Consumer<T> callback,
-        Class<T> type
+    Consumer<T> callback,
+    Class<T> type
 ) {
 
-    public void dispatch(GenericEvent event) {
-        T e = type.cast(event);
-        callback.accept(e);
-    }
+  public void dispatch(GenericEvent event) {
+    T e = type.cast(event);
+    callback.accept(e);
+  }
 }

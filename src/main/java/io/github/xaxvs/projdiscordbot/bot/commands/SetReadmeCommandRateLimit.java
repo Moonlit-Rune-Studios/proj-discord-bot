@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class SetReadmeCommandRateLimit implements BotCommand{
+public class SetReadmeCommandRateLimit implements BotCommand {
 
   private final SaveData saveData;
   private final Path path;
@@ -33,7 +33,7 @@ public class SetReadmeCommandRateLimit implements BotCommand{
           .queue();
       return;
     }
-    if(value < 0) {
+    if (value < 0) {
       event.getHook()
           .setEphemeral(true)
           .sendMessage("The rate limit must be greater than 0!")

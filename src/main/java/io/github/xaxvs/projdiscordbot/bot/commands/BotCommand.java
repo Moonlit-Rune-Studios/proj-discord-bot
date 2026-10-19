@@ -6,11 +6,11 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import java.util.Collection;
 
 public interface BotCommand {
-    void onCommandReceived(SlashCommandInteractionEvent event);
+  void onCommandReceived(SlashCommandInteractionEvent event);
 
-    String getName();
+  String getName();
 
-    String getDescription();
+  String getDescription();
 
-    Collection<? extends OptionData> getOptionData();
+  Collection<? extends OptionData> getOptionData();
 }

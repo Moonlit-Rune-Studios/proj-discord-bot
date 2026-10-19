@@ -8,14 +8,14 @@ import java.util.function.Consumer;
 
 public class BotReady extends ListenerAdapter {
 
-    private final Consumer<JDA> callback;
+  private final Consumer<JDA> callback;
 
-    public BotReady(Consumer<JDA> callback) {
-        this.callback = callback;
-    }
+  public BotReady(Consumer<JDA> callback) {
+    this.callback = callback;
+  }
 
-    @Override
-    public void onReady(ReadyEvent event) {
-        callback.accept(event.getJDA());
-    }
+  @Override
+  public void onReady(ReadyEvent event) {
+    callback.accept(event.getJDA());
+  }
 }

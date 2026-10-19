@@ -6,5 +6,5 @@ import java.util.Map;
 
 public interface CommandMap {
 
-    Map<String, BotCommand> getBotCommands();
+  Map<String, BotCommand> getBotCommands();
 }

@@ -128,7 +128,7 @@ public class Main {
   private void loadBot(String guildId, JDA jda) {
     SaveData saveData = null;
     Path directory = appDir.resolve(guildId);
-    if(!Files.exists(directory)) {
+    if (!Files.exists(directory)) {
       try {
         Files.createDirectory(directory);
       } catch (IOException e) {

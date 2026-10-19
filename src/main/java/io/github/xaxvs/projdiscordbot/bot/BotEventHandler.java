@@ -2,17 +2,14 @@ package io.github.xaxvs.projdiscordbot.bot;
 
 import io.github.xaxvs.projdiscordbot.Main;
 import io.github.xaxvs.projdiscordbot.file.SaveData;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Locale;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class BotEventHandler {
 
@@ -47,14 +44,14 @@ public class BotEventHandler {
     log.info("2");
     final TextChannel channel = event.getGuild().getTextChannelById(
         saveData.getUpdateChannelId());
-    if(channel == null) return;
+    if (channel == null) return;
 
     message.delete().queue(
         a -> {
           lastExecuted = System.nanoTime();
           log.info("success");
           Main.getReadme(snapshot -> {
-            if(snapshot == null) {
+            if (snapshot == null) {
               log.error("Failed to retrieve readme");
               return;
             }
