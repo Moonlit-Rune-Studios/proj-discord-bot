@@ -1,7 +1,12 @@
 package io.github.xaxvs.projdiscordbot.file;
 
-public class SaveData {
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.nio.file.Path;
+
+public class SaveData {
     private String webhookOutputChannelId;
     private String readmeOutputChannelId;
     private String readmeOutputMessageId;
@@ -55,5 +60,15 @@ public class SaveData {
 
     public void setWebhookOutputChannelId(String webhookOutputChannelId) {
         this.webhookOutputChannelId = webhookOutputChannelId;
+    }
+
+    public void save(Path path) {
+        JsonMapper mapper = new JsonMapper();
+        try {
+            mapper.writerWithDefaultPrettyPrinter().writeValue(path.toFile(), this);
+        } catch (IOException e) {
+            LoggerFactory.getLogger("Json File Saver")
+                    .error("Failed to save {}", path.toAbsolutePath(), e);
+        }
     }
 }
